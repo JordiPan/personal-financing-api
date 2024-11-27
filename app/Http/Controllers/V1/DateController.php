@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
-use App\Models\country;
-use App\Http\Requests\StorecountryRequest;
-use App\Http\Requests\UpdatecountryRequest;
+use App\Models\date;
+use App\Http\Requests\StoredateRequest;
+use App\Http\Requests\UpdatedateRequest;
+use App\Http\Controllers\Controller;
 
-class CountryController extends Controller
+class DateController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class CountryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorecountryRequest $request)
+    public function store(StoredateRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class CountryController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(country $country)
+    public function show(date $date)
     {
         //
     }
@@ -43,7 +44,7 @@ class CountryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(country $country)
+    public function edit(date $date)
     {
         //
     }
@@ -51,7 +52,7 @@ class CountryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatecountryRequest $request, country $country)
+    public function update(UpdatedateRequest $request, date $date)
     {
         //
     }
@@ -59,7 +60,7 @@ class CountryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(country $country)
+    public function destroy(date $date)
     {
         //
     }

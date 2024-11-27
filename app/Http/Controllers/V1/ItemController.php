@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
-use App\Models\transaction;
-use App\Http\Requests\StoretransactionRequest;
-use App\Http\Requests\UpdatetransactionRequest;
+use App\Models\item;
+use App\Http\Requests\StoreitemRequest;
+use App\Http\Requests\UpdateitemRequest;
+use App\Http\Controllers\Controller;
 
-class TransactionController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +28,7 @@ class TransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoretransactionRequest $request)
+    public function store(StoreitemRequest $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class TransactionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(transaction $transaction)
+    public function show(item $item)
     {
         //
     }
@@ -43,7 +44,7 @@ class TransactionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(transaction $transaction)
+    public function edit(item $item)
     {
         //
     }
@@ -51,7 +52,7 @@ class TransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatetransactionRequest $request, transaction $transaction)
+    public function update(UpdateitemRequest $request, item $item)
     {
         //
     }
@@ -59,7 +60,7 @@ class TransactionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(transaction $transaction)
+    public function destroy(item $item)
     {
         //
     }

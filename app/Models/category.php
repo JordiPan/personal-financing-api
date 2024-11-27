@@ -11,4 +11,8 @@ class category extends Model
     use HasFactory;
     protected $table = 'category';
     public $timestamps = false;
+
+    public function items() {
+        return $this->hasMany(item::class);
+    }
 }

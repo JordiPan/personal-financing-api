@@ -11,4 +11,6 @@ class country extends Model
     protected $table = 'country';
     /** @use HasFactory<\Database\Factories\CountryFactory> */
     use HasFactory;
+
+    protected $fillable = ['name'];
 }

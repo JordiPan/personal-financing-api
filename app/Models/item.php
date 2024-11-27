@@ -14,4 +14,7 @@ class item extends Model
     public function transaction() {
         return $this->belongsTo(transaction::class);
     }
+    public function category() {
+        return $this->belongsTo(category::class);
+    }
 }
