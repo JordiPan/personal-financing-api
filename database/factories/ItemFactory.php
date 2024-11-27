@@ -2,6 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\category;
+use App\Models\country;
+use App\Models\transaction;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +25,10 @@ class ItemFactory extends Factory
             'price' => $this->faker->randomFloat(2,10000,10000),
             'amount' => $this->faker->randomFloat(2,1,100),
             'purchase_date'=> $this->faker->dateTimeThisDecade(),
+            'user_id' => User::factory(),
+            'country_id' => 1,
+            'transaction_id' => transaction::factory(),
+            'category_id' => category::factory(),
         ];
     }
 }
