@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\V1\AuthController;
 use App\Http\Controllers\V1\CategoryController;
 use App\Http\Controllers\V1\CountryController;
 use App\Http\Controllers\V1\ItemController;
@@ -16,5 +17,7 @@ Route::group(['prefix'=> 'v1', 'namespace' => 'App\Http\Controllers\V1'], functi
     Route::apiResource('countries', CountryController::class);
     Route::apiResource('transactions',TransactionController::class);
     Route::apiResource('items',ItemController::class);
-
+    Route::post('auth/register',[AuthController::class, 'register']);
+    Route::post('auth/login',[AuthController::class, 'login']);
 });
+
