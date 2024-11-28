@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class transaction extends Model
 {
     public $timestamps = false;
+    protected $fillable = ['name','description','date','user_id'];
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
     use HasFactory;
     protected $table = 'transaction';

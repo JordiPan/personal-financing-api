@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 
 class ItemController extends Controller
 {
+
+    //MAYBE ITEM CAN HAVE EXTRA FIELD TO SHOW SOLD OR GONE boolean
     /**
      * Display a listing of the resource.
      */

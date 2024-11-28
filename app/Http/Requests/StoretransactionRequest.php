@@ -22,7 +22,10 @@ class StoretransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'description'=>'min:3|max:1000',
+            'date'=> 'required|date',
+            'user_id'=> 'required|exists:user,id'
         ];
     }
 }

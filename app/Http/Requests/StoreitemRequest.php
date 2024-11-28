@@ -23,6 +23,7 @@ class StoreitemRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'description'=>'min:3|max:1000',
             'price'=> 'required|numeric',
             'amount'=> 'required|numeric',
             'purchase_date'=> 'required|date',

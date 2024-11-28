@@ -14,23 +14,17 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(transaction::all(), 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoretransactionRequest $request)
     {
-        //
+        $transaction = transaction::create($request->validated());
+        return response()->json($transaction);
     }
 
     /**
@@ -54,7 +48,7 @@ class TransactionController extends Controller
      */
     public function update(UpdatetransactionRequest $request, transaction $transaction)
     {
-        //
+        //LATERT
     }
 
     /**
@@ -62,6 +56,7 @@ class TransactionController extends Controller
      */
     public function destroy(transaction $transaction)
     {
-        //
+        $transaction->delete();
+        return response()->json(['deleted!'],200);
     }
 }
