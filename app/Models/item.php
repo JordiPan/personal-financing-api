@@ -11,6 +11,7 @@ class item extends Model
     use HasFactory;
     public $timestamps = false;
     protected $table = 'item';
+    protected $fillable = ['img','name','description','price','amount','purchase_date','country_id','transaction_id','user_id','category_id'];
     public function transaction() {
         return $this->belongsTo(transaction::class);
     }

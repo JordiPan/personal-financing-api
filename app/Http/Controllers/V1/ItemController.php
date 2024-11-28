@@ -14,15 +14,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return item::all();
     }
 
     /**
@@ -30,7 +22,8 @@ class ItemController extends Controller
      */
     public function store(StoreitemRequest $request)
     {
-        //
+        $item = item::create($request->validated());
+        return response()->json($item);
     }
 
     /**
@@ -38,23 +31,16 @@ class ItemController extends Controller
      */
     public function show(item $item)
     {
-        //
+        return response()->json($item);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(item $item)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateitemRequest $request, item $item)
     {
-        //
+        //LATERRLTEART
     }
 
     /**
@@ -62,6 +48,7 @@ class ItemController extends Controller
      */
     public function destroy(item $item)
     {
-        //
+        $item->delete();
+        return response()->json(['deleted!'],200);
     }
 }
