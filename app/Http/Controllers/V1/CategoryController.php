@@ -26,7 +26,8 @@ class CategoryController extends Controller
      */
     public function store(StorecategoryRequest $request)
     {
-        //
+        $category = category::create($request->validated());
+        return response()->json($category,200);
     }
 
     /**
@@ -35,7 +36,8 @@ class CategoryController extends Controller
      */
     public function show(category $category)
     {
-        return $category;
+        $category = category::with('items')->find( $category->id );
+        return response()->json($category,200);;
     }
 
     /**
@@ -51,7 +53,7 @@ class CategoryController extends Controller
      */
     public function update(UpdatecategoryRequest $request, category $category)
     {
-        //
+        // ILL DO IT LATER
     }
 
     /**
@@ -59,6 +61,7 @@ class CategoryController extends Controller
      */
     public function destroy(category $category)
     {
-        //
+        $category->delete();
+        return response()->json(['deleted!'],200);
     }
 }
