@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class transaction extends Model
+class Transaction extends Model
 {
-    public $timestamps = false;
-    protected $fillable = ['name','description','date','user_id'];
+    protected $fillable = ['user_id','name','description','recurrence','date', 'is_item', 'total', 'active'];
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
     use HasFactory;
-    protected $table = 'transaction';
     public function items() {
         return $this->hasMany(Item::class);
+    }
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }

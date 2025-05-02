@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            // $table->double('amount');
-            // $table->enum('recurrence', ['monthly', 'yearly' ,'once'])->default('expense');
-            $table->unsignedBigInteger('user_id');
-            
-            $table->date('date');
-            $table->foreign('user_id')->references('id')->on('user');
+            $table->foreignId('parent_category')->nullable()->constrained('categories')->nullOnDelete();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('categories');
     }
 };

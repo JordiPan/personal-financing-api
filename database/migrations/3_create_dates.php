@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('date', function (Blueprint $table) {
+        Schema::create('dates', function (Blueprint $table) {
             $table->date('date')->primary();
-            $table->tinyInteger('day');
+            $table->year('year');
             $table->tinyInteger('month');
-            $table->integer('year');
+            $table->tinyInteger('day');
         });
     }
 
