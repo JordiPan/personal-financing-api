@@ -11,18 +11,18 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    
     public function login(LoginRequest $request) {
         $loginInfo = $request->validated();
         if (!Auth::attempt($loginInfo)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
         $user = Auth::user();
-        //red but just a code editor error on createtoken
-        $token = $user->createToken('token')->plainTextToken;
-
+        $token = "testest";
         return response()->json([
-            'token' => $token,
+            'message' => "Login!",
             'user' => $user,
+            'token' => $token,
         ]);
     }
     public function logout(LoginRequest $request) { 
@@ -35,9 +35,7 @@ class AuthController extends Controller
         $user = User::create($validatedData);
         // $token = $user->createToken();
         return response()->json([
-            "message" => "user created",
-            "user" => $user,
-            "token" => "token"
+            "message" => "user created"
     ]);
     }
 }
