@@ -5,12 +5,13 @@ use App\Http\Controllers\V1\CategoryController;
 use App\Http\Controllers\V1\CountryController;
 use App\Http\Controllers\V1\ItemController;
 use App\Http\Controllers\V1\TransactionController;
+use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware(JwtMiddleware::class);
 
 Route::group(['prefix'=> 'v1', 'namespace' => 'App\Http\Controllers\V1'], function(){
     Route::apiResource('categories',CategoryController::class);
