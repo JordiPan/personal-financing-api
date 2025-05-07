@@ -20,5 +20,6 @@ Route::group(['prefix'=> 'v1', 'namespace' => 'App\Http\Controllers\V1'], functi
     Route::apiResource('items',ItemController::class);
     Route::post('auth/register',[AuthController::class, 'register']);
     Route::post('auth/login',[AuthController::class, 'login']);
+    Route::get('auth/refresh',[AuthController::class, 'refresh']);
 });
 

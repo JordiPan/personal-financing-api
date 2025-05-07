@@ -7,7 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\Services\JwtService;
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,20 +23,26 @@ class AuthController extends Controller
 
         $accessToken = $jwt->generateAccessToken($user->id);
         $refreshToken = $jwt->generateRefreshToken($user->id);
+        $secure = env('APP_ENV') !== 'local' || request()->secure();
+        
+        // For SameSite=None, secure MUST be true
+        if ($secure === false && request()->header('Origin') !== null) {
+            $secure = true; // Force secure for cross-origin requests with SameSite=None
+        }
         return response()->json([
             'message' => "Login!",
-            'user' => $user,
-            'access_token' => $accessToken
+            'access_token' => $accessToken,
+            'role' => $user->role 
         ], 200)
-        ->cookie('refresh_token',
-            $refreshToken, 60 * 24 * 14, '/', null, env('APP_ENV') !== 'local', true, false, 'None');
+        ->withCookie(cookie('refresh_token',
+            $refreshToken, 60 * 24 * 14, '/', null, $secure, true, false, 'None'));
     }
     public function logout(LoginRequest $request) { 
         return response()->json([
             'message' => "Logged out!"
         ])
-        ->cookie('refresh_token', 
-        '', -1, '/', null, env('APP_ENV') !== 'local', true, false, 'None');
+        ->withCookie(cookie('refresh_token', 
+        '', -1, '/', null, true, true, false, 'None'));
     }
     public function register(RegisterRequest $request) { 
         $validatedData = $request->validated();
@@ -52,14 +58,17 @@ class AuthController extends Controller
     public function refresh(Request $request, JwtService $jwt) {
         $refreshToken = $request->cookie('refresh_token');
         if (!$refreshToken) {
-            return response()->json(['message' => 'No refresh token'], 401);
+            return response()->json(['message' => 'No refresh token'], 403);
         }
-
         try {
             $decoded = $jwt->decode($refreshToken);
+            $user = User::find($decoded->sub);
             $accessToken = $jwt->generateAccessToken($decoded->sub);
-
-            return response()->json(['message'=> 'refreshed!', 'access_token' => $accessToken]);
+            return response()->json([
+                'message'=> 'refreshed!', 
+                'access_token' => $accessToken,
+                'role'=>$user->role
+            ]);
         }
         catch(\Exception $e) {
             return response()->json(['message' => 'Invalid refresh token'], 401);

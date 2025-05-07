@@ -18,7 +18,7 @@ class JwtMiddleware
         $authHeader = $request->header('Authorization');
 
         if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
-            return response()->json(['message' => 'Missing token'], 401);
+            return response()->json(['message' => 'Missing token'], 403);
         }
         $token = substr($authHeader, 7);
         try {
