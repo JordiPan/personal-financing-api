@@ -21,7 +21,7 @@ class AuthController extends Controller
         }
         $user = Auth::user();
 
-        $accessToken = $jwt->generateAccessToken($user->id);
+        $accessToken = $jwt->generateAccessToken($user->id, $user->role);
         $refreshToken = $jwt->generateRefreshToken($user->id);
         $secure = env('APP_ENV') !== 'local' || request()->secure();
         
@@ -63,7 +63,7 @@ class AuthController extends Controller
         try {
             $decoded = $jwt->decode($refreshToken);
             $user = User::find($decoded->sub);
-            $accessToken = $jwt->generateAccessToken($decoded->sub);
+            $accessToken = $jwt->generateAccessToken($decoded->sub, $decoded->role);
             return response()->json([
                 'message'=> 'refreshed!', 
                 'access_token' => $accessToken,

@@ -11,9 +11,10 @@ class JwtService {
         //there SHOULD be jwt_secret
         $this->key = env('JWT_SECRET', 'whocares');
     }
-    public function generateAccessToken($userId) {
+    public function generateAccessToken($userId, $userRole) {
         return JWT::encode([
             'sub' => $userId,
+            'role' => $userRole,
             'exp' => time() + 900  // 15 minutes
         ], $this->key, $this->algorithm);
     }
