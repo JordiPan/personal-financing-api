@@ -37,7 +37,7 @@ class AuthController extends Controller
         ->withCookie(cookie('refresh_token',
             $refreshToken, 60 * 24 * 14, '/', null, $secure, true, false, 'None'));
     }
-    public function logout(LoginRequest $request) { 
+    public function logout() { 
         return response()->json([
             'message' => "Logged out!"
         ])
