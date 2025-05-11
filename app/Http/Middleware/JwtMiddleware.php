@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +11,7 @@ class JwtMiddleware
 {
     /**
      * Handle an incoming request.
-     *
+     * Basically does authorization with access token and adds user to Auth class laravel
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
@@ -23,8 +24,15 @@ class JwtMiddleware
         $token = substr($authHeader, 7);
         try {
             $payload = app(\App\Services\JwtService::class)->decode($token);
-            $request->merge(['user_id' => $payload->sub]);
+
+            $user = User::find($payload->sub);
+            if (!$user) {
+                return response()->json(['message' => 'No user found?'], 404);
+            }
+            //correct, but IDE doesn't know that the types are correct
+            auth()->setUser($user);
         } catch (\Exception $e) {
+            //i should test if this response triggers automatic refresh
             return response()->json(['message' => 'Invalid or expired token'], 401);
         }
         return $next($request);

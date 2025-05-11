@@ -13,7 +13,7 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      * /api/v1/categories/
      * category::paginate()
-     * php artisan make:resource v1/CategoryResource voor easy transforming data (DTO)
+     * php artisan make:resource v1/CategoryResource for easy transforming data (DTO)
      */
     public function index()
     {

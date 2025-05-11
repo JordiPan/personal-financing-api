@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     //php artisan route:cache
+    //TODO: make the refresh more efficient later
     public function login(LoginRequest $request, JwtService $jwt) {
         $loginInfo = $request->validated();
         if (!Auth::attempt($loginInfo)) {
@@ -27,16 +28,16 @@ class AuthController extends Controller
         
         // For SameSite=None, secure MUST be true
         if ($secure === false && request()->header('Origin') !== null) {
-            $secure = true; // Force secure for cross-origin requests with SameSite=None
+            $secure = true; 
         }
         return response()->json([
             'message' => "Login!",
-            'access_token' => $accessToken,
-            'role' => $user->role 
+            'access_token' => $accessToken
         ], 200)
         ->withCookie(cookie('refresh_token',
             $refreshToken, 60 * 24 * 14, '/', null, $secure, true, false, 'None'));
     }
+
     public function logout() { 
         return response()->json([
             'message' => "Logged out!"
@@ -63,7 +64,7 @@ class AuthController extends Controller
         try {
             $decoded = $jwt->decode($refreshToken);
             $user = User::find($decoded->sub);
-            $accessToken = $jwt->generateAccessToken($decoded->sub, $decoded->role);
+            $accessToken = $jwt->generateAccessToken($user->id, $user->role);
             return response()->json([
                 'message'=> 'refreshed!', 
                 'access_token' => $accessToken,
