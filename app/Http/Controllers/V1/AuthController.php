@@ -59,11 +59,12 @@ class AuthController extends Controller
     public function refresh(Request $request, JwtService $jwt) {
         $refreshToken = $request->cookie('refresh_token');
         if (!$refreshToken) {
-            return response()->json(['message' => 'No refresh token'], 403);
+            //giving 403 gives automatic console error, but i dont want to see it when refreshing home as guest
+            return response()->json(['message' => 'No refresh token']);
         }
         try {
             $decoded = $jwt->decode($refreshToken);
-            $user = User::find($decoded->sub);
+            $user = User::findOrFail($decoded->sub);
             $accessToken = $jwt->generateAccessToken($user->id, $user->role);
             return response()->json([
                 'message'=> 'refreshed!', 

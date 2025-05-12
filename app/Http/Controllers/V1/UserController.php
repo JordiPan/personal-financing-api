@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Services\JwtService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 
 class UserController
 {
@@ -24,8 +23,8 @@ class UserController
         $user = Auth::user();
 
         //checks with simple gate in appservicesprovider.php
-        if( !$user->can('viewAny', User::class)) {
-            return response()->json(['message'=> 'no admin priv'], 401);
+        if (!$user->can('viewAny', User::class)) {
+            return response()->json(['message' => 'no admin priv'], 401);
         }
         $users = User::all();
         return response()->json($users, 200);
@@ -36,7 +35,7 @@ class UserController
      */
     public function store(Request $request)
     {
-        return response()->json(['message'=>'path does not exist'],404);
+        return response()->json(['message' => 'path does not exist'], 404);
     }
 
     /**
@@ -49,28 +48,30 @@ class UserController
         /** @var \App\Models\User $currentUser */
         $currentUser = Auth::user();
 
-        //checks with simple gate in appservicesprovider.php
-        if( !$currentUser || !$currentUser->can('view', $user)) {
-            return response()->json(['message'=> 'no privileges'], 401);
+        //checks with simple policy
+        if (!$currentUser || !$currentUser->can('view', $user)) {
+            return response()->json(['message' => 'no privileges'], 401);
         }
         //TODO: use DTO/resource here later
         return response()->json($user, 200);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(RegisterRequest $request, User $user)
     {
-        // ILL DO IT LATER
+        /** @var \App\Models\User $currentUser */
+        $currentUser = Auth::user();
+        $newUserInfo = $request->validated();
+
+        if (!$currentUser || !$currentUser->can('update', $user)) {
+            return response()->json(['message' => 'Cannnot update other user than self'], 401);
+        }
+
+        $user->update($newUserInfo);
+        //TODO: use DTO/resource here later
+        return response()->json($user, 200);
     }
 
     /**
@@ -79,6 +80,16 @@ class UserController
     public function destroy(User $user)
     {
         $user->delete();
-        return response()->json(['deleted!'],200);
+        return response()->json(['message' => 'deleted!'], 200)->withCookie(cookie(
+            'refresh_token',
+            '',
+            -1,
+            '/',
+            null,
+            true,
+            true,
+            false,
+            'None'
+        ));;
     }
 }
