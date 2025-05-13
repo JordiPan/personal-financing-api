@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Services\JwtService;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class UserController
      * Display a listing of the resource.
      * /api/v1/users/
      * auth::user gets set at jwtmiddleware with refresh
+     * automatically gets user with userid in background for some routes
      */
     public function index()
     {
@@ -24,7 +26,7 @@ class UserController
 
         //checks with simple gate in appservicesprovider.php
         if (!$user->can('viewAny', User::class)) {
-            return response()->json(['message' => 'no admin priv'], 401);
+            return response()->json(['message' => 'no admin priv'], 403);
         }
         $users = User::all();
         return response()->json($users, 200);
@@ -41,7 +43,6 @@ class UserController
     /**
      * Display the specified resource.
      * /api/v1/users/{id}
-     * auto gets user with userid in background
      */
     public function show(User $user)
     {
@@ -50,7 +51,7 @@ class UserController
 
         //checks with simple policy
         if (!$currentUser || !$currentUser->can('view', $user)) {
-            return response()->json(['message' => 'no privileges'], 401);
+            return response()->json(['message' => 'no privileges'], 403);
         }
         //TODO: use DTO/resource here later
         return response()->json($user, 200);
@@ -59,19 +60,17 @@ class UserController
     /**
      * Update the specified resource in storage.
      */
-    public function update(RegisterRequest $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        /** @var \App\Models\User $currentUser */
-        $currentUser = Auth::user();
         $newUserInfo = $request->validated();
-
-        if (!$currentUser || !$currentUser->can('update', $user)) {
-            return response()->json(['message' => 'Cannnot update other user than self'], 401);
-        }
+        //this gets done in updaterequest class
+        // $currentUser = Auth::user();
+        // if (!$currentUser || !$currentUser->can('update', $user)) {
+        //     return response()->json(['message' => 'Cannnot update other user than self'], 403);
+        // }
 
         $user->update($newUserInfo);
-        //TODO: use DTO/resource here later
-        return response()->json($user, 200);
+        return response()->json(['message' => 'Updated!', 'user'=> $newUserInfo], 200);
     }
 
     /**
