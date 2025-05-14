@@ -21,6 +21,8 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Foreign key referencing categories table
             $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('set null'); // Foreign key for transactions (nullable)
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key referencing users table
+            $table->string('img_link')->nullable();
+            $table->string('card_api_id')->nullable();
             $table->timestamps();
         });
     }

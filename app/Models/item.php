@@ -9,7 +9,7 @@ class Item extends Model
 {
     /** @use HasFactory<\Database\Factories\ItemFactory> */
     use HasFactory;
-    protected $fillable = ['name','description','price','amount','country_id','category_id','transaction_id','user_id'];
+    protected $fillable = ['name','description','price','amount','country_id','category_id','transaction_id','user_id', 'img_link', 'card_api_id'];
     public function transaction() {
         return $this->belongsTo(Transaction::class, 'transaction_id');
     }
