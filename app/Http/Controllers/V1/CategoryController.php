@@ -6,6 +6,7 @@ use App\Models\category;
 use App\Http\Requests\StorecategoryRequest;
 use App\Http\Requests\UpdatecategoryRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -17,8 +18,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = category::with('items')->get();
-        return response()->json($categories, 200);
+        $user = Auth::user();
+        $categories = category::where('user_id',$user->id)->get();
+        return response()->json(['categories'=>$categories], 200);
     }
     /**
      * Store a newly created resource in storage.
@@ -26,13 +28,16 @@ class CategoryController extends Controller
      */
     public function store(StorecategoryRequest $request)
     {
-        $category = category::create($request->validated());
-        return response()->json($category,200);
+        $formCategory = $request->validated();
+        $user = Auth::user();
+        $formCategory['user_id'] = $user->id;
+        $category = category::create($formCategory);
+        return response()->json(['message' => 'created!', 'category' => $category],200);
     }
 
     /**
      * Display the specified resource.
-     * /api/v1/categories/1
+     * /api/v1/categories/:slug??
      */
     public function show(category $category)
     {

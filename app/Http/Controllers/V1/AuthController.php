@@ -45,6 +45,7 @@ class AuthController extends Controller
         ->withCookie(cookie('refresh_token', 
         '', -1, '/', null, true, true, false, 'None'));
     }
+    
     public function register(RegisterRequest $request) { 
         $validatedData = $request->validated();
         $validatedData['password'] = Hash::make($validatedData['password']); 
