@@ -11,7 +11,7 @@ class Transaction extends Model
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
     use HasFactory;
     public function items() {
-        return $this->hasMany(Item::class);
+        return $this->belongsToMany(Item::class, 'transaction_items');
     }
     public function user() {
         return $this->belongsTo(User::class);
