@@ -37,11 +37,16 @@ class CategoryController extends Controller
 
     /**
      * Display the specified resource.
-     * /api/v1/categories/:slug??
+     * /api/v1/categories/{id}
      */
     public function show(category $category)
     {
-        $category = category::with('items')->find( $category->id );
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user->can('view', $category)) {
+            return response()->json(['message' => 'no privileges'], 403);
+        }
+        $category = $category->load('items');
         return response()->json($category,200);;
     }
 

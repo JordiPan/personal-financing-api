@@ -50,7 +50,7 @@ class UserController
         $currentUser = Auth::user();
 
         //checks with simple policy
-        if (!$currentUser || !$currentUser->can('view', $user)) {
+        if (!$currentUser->can('view', $user)) {
             return response()->json(['message' => 'no privileges'], 403);
         }
         //TODO: use DTO/resource here later

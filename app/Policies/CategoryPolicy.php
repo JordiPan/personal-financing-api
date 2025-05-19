@@ -21,7 +21,7 @@ class CategoryPolicy
      */
     public function view(User $user, category $category): bool
     {
-        return false;
+        return $user->id === $category->user_id;
     }
 
     /**

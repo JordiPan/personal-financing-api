@@ -32,7 +32,6 @@ class JwtMiddleware
             //correct, but IDE doesn't know that the types are correct
             auth()->setUser($user);
         } catch (\Exception $e) {
-            //i should test if this response triggers automatic refresh
             return response()->json(['message' => 'Invalid or expired token'], 401);
         }
         return $next($request);
