@@ -6,6 +6,8 @@ use App\Models\transaction;
 use App\Http\Requests\StoretransactionRequest;
 use App\Http\Requests\UpdatetransactionRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TransactionResource;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -14,7 +16,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return response()->json(transaction::all(), 200);
+        $user = Auth::user();
+        $transactions = transaction::where('user_id',$user->id)->get();
+        return response()->json(['message'=> 'success','transactions'=>$transactions], 200);
     }
 
 
@@ -58,5 +62,18 @@ class TransactionController extends Controller
     {
         $transaction->delete();
         return response()->json(['deleted!'],200);
+    }
+
+    public function recentFive() {
+        // $user = Auth::user();
+        // $transactions = transaction::where('user_id',$user->id)
+        // ->orderBy('created_at', 'desc')
+        // ->limit(5)
+        // ->get();
+        // if($transactions->isEmpty()) {
+            return response()->json(['message'=>'Nothing','transactions'=>[]], 200);
+        // }
+        // $transactions = TransactionResource::collection($transactions);
+        // return response()->json(['message'=>'success','transactions'=>$transactions], 200);
     }
 }

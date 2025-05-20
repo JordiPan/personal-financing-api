@@ -19,7 +19,7 @@ class TransactionFactory extends Factory
     {
         return [
             'name' => $this->faker->word(),
-            'recurrence' => $this->faker->word(),
+            'recurrence' => 'once',
             'date'=> $this->faker->dateTimeThisDecade(),
             'user_id' => User::factory()
         ];

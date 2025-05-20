@@ -24,7 +24,6 @@ class ItemFactory extends Factory
             'name' => $this->faker->name,
             'price' => $this->faker->randomFloat(2,10000,10000),
             'amount' => $this->faker->randomFloat(2,1,100),
-            'purchase_date'=> $this->faker->dateTimeThisDecade(),
             'user_id' => User::factory(),
             'country_id' => 1,
             'transaction_id' => transaction::factory(),

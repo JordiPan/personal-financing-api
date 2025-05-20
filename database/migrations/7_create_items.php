@@ -13,16 +13,15 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // For the item name
-            $table->text('description'); // For the item description
-            $table->decimal('price', 10, 2); // For the price with 2 decimal places
-            $table->integer('amount'); // For the amount of items available
-            $table->foreignId('country_id')->constrained()->onDelete('cascade'); // Foreign key referencing countries table
-            $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Foreign key referencing categories table
-            $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('set null'); // Foreign key for transactions (nullable)
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key referencing users table
+            $table->string('name'); 
+            $table->text('description');
+            $table->decimal('price', 10, 2); 
+            $table->foreignId('country_id')->constrained()->onDelete('cascade'); 
+            $table->foreignId('category_id')->constrained()->onDelete('cascade'); 
+            $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('set null'); 
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
             $table->string('img_link')->nullable();
-            $table->string('card_api_id')->nullable();
+            $table->string('tcg_api_id')->nullable();
             $table->timestamps();
         });
     }
