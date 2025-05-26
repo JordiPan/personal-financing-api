@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('name'); 
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->decimal('price', 10, 2); 
+            $table->boolean('sellable')->default(false); 
             $table->foreignId('country_id')->constrained()->onDelete('cascade'); 
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); 
             $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('set null'); 

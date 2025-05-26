@@ -21,7 +21,8 @@ class TransactionFactory extends Factory
             'name' => $this->faker->word(),
             'recurrence' => 'once',
             'date'=> $this->faker->dateTimeThisDecade(),
-            'user_id' => User::factory()
+            'user_id' => User::factory(),
+            'total'=> $this->faker->randomFloat(2,10000,10000)
         ];
     }
 }

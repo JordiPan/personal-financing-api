@@ -22,11 +22,10 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\V1'], funct
         Route::apiResource('users', UserController::class);
         Route::apiResource('categories', CategoryController::class);
         Route::apiResource('countries', CountryController::class);
-
+        Route::get('transactions/recent', [TransactionController::class, 'recent']);
         Route::apiResource('transactions', TransactionController::class);
         Route::apiResource('items', ItemController::class);
     });
-    Route::get('recent/transactions', [TransactionController::class, 'recentFive']);
     Route::post('auth/register', [AuthController::class, 'register']);
     Route::post('auth/login', [AuthController::class, 'login']);
     Route::post('auth/logout', [AuthController::class, 'logout']);

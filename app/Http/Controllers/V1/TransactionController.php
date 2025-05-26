@@ -17,8 +17,8 @@ class TransactionController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $transactions = transaction::where('user_id',$user->id)->get();
-        return response()->json(['message'=> 'success','transactions'=>$transactions], 200);
+        $transactions = transaction::where('user_id', $user->id)->get();
+        return response()->json(['message' => 'success', 'transactions' => $transactions], 200);
     }
 
 
@@ -36,7 +36,7 @@ class TransactionController extends Controller
      */
     public function show(transaction $transaction)
     {
-        //
+        return response()->json(['message' => 'One transaction', 'transaction' => 'Test']);
     }
 
     /**
@@ -61,19 +61,20 @@ class TransactionController extends Controller
     public function destroy(transaction $transaction)
     {
         $transaction->delete();
-        return response()->json(['deleted!'],200);
+        return response()->json(['deleted!'], 200);
     }
 
-    public function recentFive() {
-        // $user = Auth::user();
-        // $transactions = transaction::where('user_id',$user->id)
-        // ->orderBy('created_at', 'desc')
-        // ->limit(5)
-        // ->get();
-        // if($transactions->isEmpty()) {
-            return response()->json(['message'=>'Nothing','transactions'=>[]], 200);
-        // }
-        // $transactions = TransactionResource::collection($transactions);
-        // return response()->json(['message'=>'success','transactions'=>$transactions], 200);
+    public function recent()
+    {
+        $user = Auth::user();
+        $transactions = transaction::where('user_id', $user->id)
+            // ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get()->sortDesc();
+        if ($transactions->isEmpty()) {
+            return response()->json(['message' => 'Nothing found', 'transactions' => []], 200);
+        }
+        $transactions = TransactionResource::collection($transactions);
+        return response()->json(['message' => 'success', 'transactions' => $transactions], 200);
     }
 }

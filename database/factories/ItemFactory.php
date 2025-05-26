@@ -22,11 +22,12 @@ class ItemFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'price' => $this->faker->randomFloat(2,10000,10000),
-            'amount' => $this->faker->randomFloat(2,1,100),
+            'description' => $this->faker->sentence,
+            'price' => $this->faker->randomFloat(2,1,10000),
+            // 'amount' => $this->faker->randomFloat(2,1,100),
             'user_id' => User::factory(),
             'country_id' => 1,
-            'transaction_id' => transaction::factory(),
+            // 'transaction_id' => transaction::factory(),
             'category_id' => category::factory(),
         ];
     }
