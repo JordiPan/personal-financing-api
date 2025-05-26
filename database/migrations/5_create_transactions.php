@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Type enum [sale, investment, loan, transfer] maybe in the future
      */
     public function up(): void
     {
@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name'); 
             $table->text('description')->nullable();
-            $table->enum('recurrence', ['once', 'daily', 'weekly', 'monthly', 'yearly']);
+            $table->enum('direction', ['add', 'subtract'])->default('subtract');
+            $table->enum('recurrence', ['once', 'daily', 'weekly', 'monthly', 'yearly'])->default('once');
             $table->date('date');
             $table->foreign('date')->references('date')->on('dates')->onDelete('set null');
             $table->decimal('total', 10, 2); 
