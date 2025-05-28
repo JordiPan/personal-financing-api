@@ -10,9 +10,8 @@ use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware(JwtMiddleware::class);
+// php artisan route:clear
+// php artisan route:cache
 
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\V1'], function () {
     //these routes need at least a valid refresh token to go next
@@ -21,6 +20,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\V1'], funct
     ], function () {
         Route::apiResource('users', UserController::class);
         Route::apiResource('categories', CategoryController::class);
+        //custom routes need to be first to register them
+        Route::get('countries/categories', [CountryController::class, 'getCountriesCategories']);
         Route::apiResource('countries', CountryController::class);
         Route::get('transactions/recent', [TransactionController::class, 'recent']);
         Route::apiResource('transactions', TransactionController::class);

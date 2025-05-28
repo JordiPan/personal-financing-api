@@ -6,17 +6,18 @@ use App\Models\item;
 use App\Http\Requests\StoreitemRequest;
 use App\Http\Requests\UpdateitemRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ItemController extends Controller
 {
-
-    //MAYBE ITEM CAN HAVE EXTRA FIELD TO SHOW SOLD OR GONE boolean
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return item::all();
+        $user = Auth::user();
+        $userItems = item::where('user_id', $user->id)->get();
+        return response()->json(['message' => 'items of user here!', 'items' => $userItems], 200);
     }
 
     /**
@@ -25,7 +26,7 @@ class ItemController extends Controller
     public function store(StoreitemRequest $request)
     {
         $item = item::create($request->validated());
-        return response()->json($item);
+        return response()->json(['message' => 'Item made!', 'item' => $item], 200);
     }
 
     /**
@@ -51,6 +52,6 @@ class ItemController extends Controller
     public function destroy(item $item)
     {
         $item->delete();
-        return response()->json(['deleted!'],200);
+        return response()->json(['deleted!'], 200);
     }
 }

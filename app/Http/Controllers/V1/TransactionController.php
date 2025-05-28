@@ -27,6 +27,7 @@ class TransactionController extends Controller
      */
     public function store(StoretransactionRequest $request)
     {
+        //dont forget to also make new transactionitems rows
         $transaction = transaction::create($request->validated());
         return response()->json($transaction);
     }

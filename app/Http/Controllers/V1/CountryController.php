@@ -6,7 +6,10 @@ use App\Models\country;
 use App\Http\Requests\StorecountryRequest;
 use App\Http\Requests\UpdatecountryRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
+use App\Models\Category;
 use Dotenv\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class CountryController extends Controller
 {
@@ -50,6 +53,19 @@ class CountryController extends Controller
     public function destroy(country $country)
     {
         $country->delete();
-        return response()->json(['deleted!'],200);
+        return response()->json(['deleted!'], 200);
+    }
+
+    //used for the making of a transaction item, maybe change location for this route later
+    public function getCountriesCategories()
+    {
+        $countries = country::all();
+        $user = Auth::user();
+        $categories = Category::where('user_id', $user->id)->get();
+        return response()->json([
+            'message' => 'got!',
+            'countries' => $countries,
+            'categories' => CategoryResource::collection($categories)
+        ], 200);
     }
 }
