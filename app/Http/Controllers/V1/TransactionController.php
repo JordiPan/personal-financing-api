@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
@@ -28,44 +29,52 @@ class TransactionController extends Controller
      */
     public function store(StoretransactionRequest $request)
     {
-        //check if category belongs to the actual user that made the transaction?
-        $transactionData = $request->validated();
-        $newItems = $transactionData['newItems'] ?? [];
-        $existingItems = $transactionData['existingItems'] ?? [];
-        $user = Auth::user();
+        try {
+            DB::beginTransaction();
+            //check if category belongs to the actual user that made the transaction?
+            $transactionData = $request->validated();
+            $newItems = $transactionData['newItems'] ?? [];
+            $existingItems = $transactionData['existingItems'] ?? [];
+            $user = Auth::user();
+            $registeredItems = [];
+            foreach ($newItems as $item) {
+                $item['user_id'] = $user->id;
+                $newItem = Item::create($item);
+                $newItem['quantity'] = $item['quantity'];
+                array_push($registeredItems, $newItem);
+            }
 
-        //1. add new items to DB
-        $registeredItems = [];
-        foreach ($newItems as $item) {
-            $item['user_id'] = $user->id;
-            $newItem = Item::create($item);
-            $newItem['quantity'] = $item['quantity'];
-            array_push($registeredItems, $newItem);
+            //2. make base transaction
+            unset($transactionData['existingItems']);
+            unset($transactionData['newItems']);
+            $transactionData["user_id"] = $user->id;
+            $transaction = transaction::create($transactionData);
+
+            //3. make the transaction items
+            foreach ($existingItems as $item) {
+                $transaction->items()->attach($item['id'], [
+                    "quantity" => $item['quantity'],
+                    "price_at_purchase" => $item['price']
+                ]);
+            }
+
+            foreach ($registeredItems as $item) {
+                $transaction->items()->attach($item['id'], [
+                    "quantity" => $item['quantity'],
+                    "price_at_purchase" => $item['price']
+                ]);
+            }
+            DB::commit();
+            //4. profit
+            return response()->json(['message' => 'made transaction!', 'transaction' => $transaction], 200);
+        } 
+        catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to create transaction.',
+                'details' => app()->isDebug() ? $e->getMessage() : null
+            ], 500);
         }
-
-        //2. make base transaction
-        unset($transactionData['existingItems']);
-        unset($transactionData['newItems']);
-        $transactionData["user_id"] = $user->id;
-        $transaction = transaction::create($transactionData);
-
-        //3. make the transaction items
-        foreach ($existingItems as $item) {
-            $transaction->items()->attach($item['id'], [
-                "quantity" => $item['quantity'],
-                "price_at_purchase" => $item['price']
-            ]);
-        }
-
-        foreach ($registeredItems as $item) {
-            $transaction->items()->attach($item['id'], [
-                "quantity" => $item['quantity'],
-                "price_at_purchase" => $item['price']
-            ]);
-        }
-
-        //4. profit
-        return response()->json(['message' => 'made transaction!', 'transaction' => $transaction], 200);
     }
 
     /**
@@ -105,9 +114,10 @@ class TransactionController extends Controller
     {
         $user = Auth::user();
         $transactions = transaction::where('user_id', $user->id)
-            // ->orderBy('created_at', 'desc')
+            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->limit(5)
-            ->get()->sortDesc();
+            ->get();
         if ($transactions->isEmpty()) {
             return response()->json(['message' => 'Nothing found', 'transactions' => []], 200);
         }
