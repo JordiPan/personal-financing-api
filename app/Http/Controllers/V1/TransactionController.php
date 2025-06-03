@@ -7,6 +7,7 @@ use App\Http\Requests\StoretransactionRequest;
 use App\Http\Requests\UpdatetransactionRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransactionResource;
+use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
@@ -27,9 +28,44 @@ class TransactionController extends Controller
      */
     public function store(StoretransactionRequest $request)
     {
-        //dont forget to also make new transactionitems rows
-        $transaction = transaction::create($request->validated());
-        return response()->json($transaction);
+        //check if category belongs to the actual user that made the transaction?
+        $transactionData = $request->validated();
+        $newItems = $transactionData['newItems'] ?? [];
+        $existingItems = $transactionData['existingItems'] ?? [];
+        $user = Auth::user();
+
+        //1. add new items to DB
+        $registeredItems = [];
+        foreach ($newItems as $item) {
+            $item['user_id'] = $user->id;
+            $newItem = Item::create($item);
+            $newItem['quantity'] = $item['quantity'];
+            array_push($registeredItems, $newItem);
+        }
+
+        //2. make base transaction
+        unset($transactionData['existingItems']);
+        unset($transactionData['newItems']);
+        $transactionData["user_id"] = $user->id;
+        $transaction = transaction::create($transactionData);
+
+        //3. make the transaction items
+        foreach ($existingItems as $item) {
+            $transaction->items()->attach($item['id'], [
+                "quantity" => $item['quantity'],
+                "price_at_purchase" => $item['price']
+            ]);
+        }
+
+        foreach ($registeredItems as $item) {
+            $transaction->items()->attach($item['id'], [
+                "quantity" => $item['quantity'],
+                "price_at_purchase" => $item['price']
+            ]);
+        }
+
+        //4. profit
+        return response()->json(['message' => 'made transaction!', 'transaction' => $transaction], 200);
     }
 
     /**

@@ -23,8 +23,8 @@ class StoreitemRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'description'=>'min:3|max:1000',
-            'price'=> 'required|numeric|min:0.01|regex:/^\d+(\.\d{1,2})?$/',
+            'description'=>'min:3|max:500',
+            'price'=> 'required|numeric|min:0.01|decimal:0,2',
             'purchase_date'=> 'required|date',
             'country_id'=> 'exists:countries,id',
             'user_id'=> 'required|exists:users,id',

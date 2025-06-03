@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Recurrence;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class StoretransactionRequest extends FormRequest
 {
@@ -21,11 +23,26 @@ class StoretransactionRequest extends FormRequest
      */
     public function rules(): array
     {
+        
         return [
             'name' => 'required|string|max:255',
-            'description'=>'min:3|max:1000',
+            'description'=>'string|max:500',
             'date'=> 'required|date',
-            'user_id'=> 'required|exists:user,id'
+            'active' => 'required|boolean',
+            'direction' => 'required|boolean',
+            'total' => 'required|numeric|min:0.01|decimal:0,2',
+            'existingItems' => 'sometimes|array',
+            'existingItems.*.id' => 'required|integer|exists:items,id',
+            'existingItems.*.quantity' => 'required|integer|min:1',
+            'newItems' => 'sometimes|array',
+            'newItems.*.name' => 'required|string|max:255',
+            'newItems.*.description' => 'string|max:500',
+            'newItems.*.category_id' => 'required|integer|exists:categories,id',
+            'newItems.*.price' => 'required|numeric|min:0.01|decimal:0,2',
+            'newItems.*.sellable' => 'required|boolean',
+            'newItems.*.country_id' => 'required|integer|exists:countries,id',
+            'newItems.*.quantity' => 'required|integer|min:1',
+            'recurrence' => ['required', new Enum(Recurrence::class)]
         ];
     }
 }
