@@ -46,9 +46,10 @@ class CategoryController extends Controller
         if (!$user->can('view', $category)) {
             return response()->json(['message' => 'no privileges'], 403);
         }
-        //TODO: load items's relationships like country and .... that's it
-        $category = $category->load('items');
-        $category->items->load('countries');
+        $category = $category->load(['items' => function($query){
+            $query->orderBy('created_at', 'asc');
+        }]);
+        $category->items->load('country');
         return response()->json(['message' => 'Items gotten!', 'items' => $category->items],200);;
     }
 
