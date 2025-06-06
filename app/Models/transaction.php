@@ -7,15 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $fillable = ['user_id', 'name', 'description', 'recurrence', 'date', 'is_item', 'total', 'active'];
+    public const DIRECTION_INCOME = 'add';
+    public const DIRECTION_EXPENSES = 'subtract';
+    protected $fillable = ['user_id', 'name', 'description', 'recurrence', 'date', 'total', 'active'];
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
     use HasFactory;
-    public function items(){
+    public function items()
+    {
         return $this->belongsToMany(Item::class, 'transaction_items')
             ->withPivot('quantity', 'price_at_purchase')
             ->withTimestamps();
     }
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

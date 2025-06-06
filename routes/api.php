@@ -23,7 +23,6 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\V1'], funct
         //custom routes need to be first to register them
         Route::get('countries/categories', [CountryController::class, 'getCountriesCategories']);
         Route::apiResource('countries', CountryController::class);
-        Route::get('transactions/recent', [TransactionController::class, 'recent']);
         Route::apiResource('transactions', TransactionController::class);
         Route::apiResource('items', ItemController::class);
     });

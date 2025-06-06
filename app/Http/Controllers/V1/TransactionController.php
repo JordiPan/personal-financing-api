@@ -6,6 +6,7 @@ use App\Models\transaction;
 use App\Http\Requests\StoretransactionRequest;
 use App\Http\Requests\UpdatetransactionRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TransactionRequest;
 use App\Http\Resources\TransactionResource;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
@@ -16,10 +17,40 @@ class TransactionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(TransactionRequest $request)
     {
         $user = Auth::user();
-        $transactions = transaction::where('user_id', $user->id)->get();
+        $filters = $request->only(['direction', 'recurrence']);
+        $query = Transaction::query();
+        $query->where('user_id', $user->id);
+
+        foreach ($filters as $key => $value) {
+            if (!empty($value)) {
+                $query->where($key, $value);
+            }
+        }
+
+        if ($orderBy = $request->query('orderBy')) {
+            $query->orderBy('date', $orderBy);
+            $query->orderBy('created_at', $orderBy);
+        }
+
+        if ($amount = $request->query('amount')) {
+            $query->limit($amount);
+        }
+
+        $transactions = $query->get();
+        if ($transactions->isEmpty()) {
+            return response()->json(['message' => 'Nothing found', 'transactions' => []], 200);
+        }
+        if ($request->query('recurrence')) {
+            return response()->json([
+                'message' => 'success',
+                'income' => $transactions->where('direction', 'add')->values(),
+                'expenses' => $transactions->where('direction', 'subtract')->values(),
+            ], 200);
+        }
+        $transactions = TransactionResource::collection($transactions);
         return response()->json(['message' => 'success', 'transactions' => $transactions], 200);
     }
 
@@ -67,8 +98,7 @@ class TransactionController extends Controller
             DB::commit();
             //4. profit
             return response()->json(['message' => 'made transaction!', 'transaction' => $transaction], 200);
-        } 
-        catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Failed to create transaction.',
@@ -107,21 +137,6 @@ class TransactionController extends Controller
     public function destroy(transaction $transaction)
     {
         $transaction->delete();
-        return response()->json(['deleted!'], 200);
-    }
-
-    public function recent()
-    {
-        $user = Auth::user();
-        $transactions = transaction::where('user_id', $user->id)
-            ->orderBy('date', 'desc')
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-        if ($transactions->isEmpty()) {
-            return response()->json(['message' => 'Nothing found', 'transactions' => []], 200);
-        }
-        $transactions = TransactionResource::collection($transactions);
-        return response()->json(['message' => 'success', 'transactions' => $transactions], 200);
+        return response()->json(['deleted!'], status: 200);
     }
 }
