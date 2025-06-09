@@ -10,6 +10,9 @@ class Transaction extends Model
     public const DIRECTION_INCOME = 'add';
     public const DIRECTION_EXPENSES = 'subtract';
     protected $fillable = ['user_id', 'name', 'description', 'recurrence', 'date', 'total', 'active'];
+    protected $casts = [
+        'total' => 'float',
+    ];
     /** @use HasFactory<\Database\Factories\TransactionFactory> */
     use HasFactory;
     public function items()

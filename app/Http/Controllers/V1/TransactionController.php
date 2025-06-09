@@ -19,27 +19,33 @@ class TransactionController extends Controller
      */
     public function index(TransactionRequest $request)
     {
+        $request->validated();
         $user = Auth::user();
         $filters = $request->only(['direction', 'recurrence']);
         $query = Transaction::query();
         $query->where('user_id', $user->id);
-
+        $orderBy = $request->validated('orderBy', 'desc');
+        $orderMode = $request->validated('orderMode', 'full');
         foreach ($filters as $key => $value) {
             if (!empty($value)) {
                 $query->where($key, $value);
             }
         }
 
-        if ($orderBy = $request->query('orderBy')) {
+        if ($orderMode === 'full') {
+            //I already validated it with request rules so injecting is ok
             $query->orderBy('date', $orderBy);
-            $query->orderBy('created_at', $orderBy);
+            
+        }
+        else {
+            $query->orderByRaw("$orderMode(date) $orderBy");
         }
 
         if ($amount = $request->query('amount')) {
             $query->limit($amount);
         }
-
-        $transactions = $query->get();
+        $query->orderBy('created_at', $orderBy);
+        $transactions = $query->where('active', true)->get();
         if ($transactions->isEmpty()) {
             return response()->json(['message' => 'Nothing found', 'transactions' => []], 200);
         }

@@ -26,15 +26,17 @@ class TransactionRequest extends FormRequest
             'recurrence' => 'nullable|in:once,daily,monthly,weekly,yearly',
             'amount' => 'nullable|integer|min:0',
             'orderBy' => 'nullable|in:asc,desc',
+            'orderMode' => 'nullable|in:day,month,year,full',
         ];
     }
     protected function prepareForValidation()
     {
         $this->merge([
-            'recurrence' => $this->sanitizeString($this->recurrence),
-            'direction' => $this->sanitizeString($this->direction),
+            'recurrence' => strtolower($this->sanitizeString($this->recurrence)),
+            'direction' => strtolower($this->sanitizeString($this->direction)),
             'amount' => $this->sanitizeString($this->amount),
-            'orderBy' => $this->sanitizeString($this->orderBy),
+            'orderBy' => strtolower($this->sanitizeString($this->orderBy)),
+            'orderMode' =>  strtolower($this->sanitizeString($this->orderMode)),
         ]);
     }
 
