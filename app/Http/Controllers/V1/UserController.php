@@ -53,7 +53,6 @@ class UserController
         if (!$currentUser->can('view', $user)) {
             return response()->json(['message' => 'no privileges'], 403);
         }
-        //TODO: use DTO/resource here later
         return response()->json($user, 200);
     }
 

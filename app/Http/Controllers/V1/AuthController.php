@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     //php artisan route:cache
-    //TODO: make the refresh more efficient later
     public function login(LoginRequest $request, JwtService $jwt) {
         $loginInfo = $request->validated();
         if (!Auth::attempt($loginInfo)) {

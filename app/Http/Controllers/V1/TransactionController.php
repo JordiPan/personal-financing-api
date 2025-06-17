@@ -19,13 +19,14 @@ class TransactionController extends Controller
      */
     public function index(TransactionRequest $request)
     {
-        $request->validated();
+        $validated = $request->validated();
         $user = Auth::user();
         $filters = $request->only(['direction', 'recurrence']);
         $query = Transaction::query();
         $query->where('user_id', $user->id);
-        $orderBy = $request->validated('orderBy', 'desc');
-        $orderMode = $request->validated('orderMode', 'full');
+        $orderBy = $validated['orderBy'] ?: 'desc';
+        $orderMode = $validated['orderMode'] ?: 'full';
+
         foreach ($filters as $key => $value) {
             if (!empty($value)) {
                 $query->where($key, $value);
@@ -35,9 +36,7 @@ class TransactionController extends Controller
         if ($orderMode === 'full') {
             //I already validated it with request rules so injecting is ok
             $query->orderBy('date', $orderBy);
-            
-        }
-        else {
+        } else {
             $query->orderByRaw("$orderMode(date) $orderBy");
         }
 
