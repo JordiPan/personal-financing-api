@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    
     //php artisan route:cache
     public function login(LoginRequest $request, JwtService $jwt) {
         $loginInfo = $request->validated();

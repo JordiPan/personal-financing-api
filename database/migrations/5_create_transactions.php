@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->enum('direction', ['add', 'subtract'])->default('subtract');
             $table->enum('recurrence', ['once', 'daily', 'weekly', 'monthly', 'yearly'])->default('once');
-            $table->date('date');
+            $table->date('date')->nullable();
             $table->foreign('date')->references('date')->on('dates')->onDelete('set null');
             $table->decimal('total', 10, 2); 
             $table->boolean('active')->default(true);

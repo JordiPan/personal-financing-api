@@ -51,8 +51,10 @@ class TransactionController extends Controller
         if ($request->query('recurrence')) {
             return response()->json([
                 'message' => 'success',
-                'income' => $transactions->where('direction', 'add')->values(),
-                'expenses' => $transactions->where('direction', 'subtract')->values(),
+                'transactions' => [
+                    'income' => $transactions->where('direction', 'add')->values(),
+                    'expenses' => $transactions->where('direction', 'subtract')->values(),
+                ],
             ], 200);
         }
         $transactions = TransactionResource::collection($transactions);
@@ -107,7 +109,7 @@ class TransactionController extends Controller
             DB::rollBack();
             return response()->json([
                 'message' => 'Failed to create transaction.',
-                'details' => app()->isDebug() ? $e->getMessage() : null
+                'details' => $e->getMessage()
             ], 500);
         }
     }
